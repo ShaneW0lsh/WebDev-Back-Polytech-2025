@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="post mb-4">
+    <h1 class="mb-3">{{ post.title }}</h1>
+    <div class="post-meta mb-3">
+        <span class="author">Автор: {{ post.author }}</span>
+        <span class="date ms-3">Дата публикации: {{ post.date.strftime('%d.%m.%Y %H:%M') }}</span>
+    </div>
+    <img src="{{ url_for('static', filename='images/' + post.image_id) }}" class="img-fluid mb-4" alt="Изображение поста">
+    <div class="post-content mb-4">
+        {{ post.text }}
+    </div>
+</article>
+
+<section class="comments">
+    <h2 class="mb-3">Комментарии</h2>
+    
+    <form class="comment-form mb-4" method="post">
+        <div class="mb-3">
+            <label for="comment_text" class="form-label">Оставьте комментарий</label>
+            <textarea class="form-control" id="comment_text" name="comment_text" rows="3" required placeholder="Введите ваш комментарий"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+
+    <div class="comments-list">
+        {% for comment in post.comments %}
+        <div class="comment mb-3">
+            <div class="comment-header">
+                <strong>{{ comment.author }}</strong>
+            </div>
+            <div class="comment-text">
+                {{ comment.text }}
+            </div>
+            {% if comment.replies %}
+            <div class="replies ms-4 mt-2">
+                {% for reply in comment.replies %}
+                <div class="reply mb-2">
+                    <div class="reply-header">
+                        <strong>{{ reply.author }}</strong>
+                    </div>
+                    <div class="reply-text">
+                        {{ reply.text }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %} 

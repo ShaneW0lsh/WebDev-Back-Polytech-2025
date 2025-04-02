@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}URL параметры{% endblock %}
+
+{% block content %}
+<h1>URL параметры</h1>
+{% if params %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Параметр</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in params.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Параметры URL отсутствуют</p>
+{% endif %}
+{% endblock %} 

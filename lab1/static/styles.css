@@ -1,0 +1,14 @@
+body {
+    font-size: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+footer {
+    margin-top: auto
+}
+
+.avatar {
+    max-width: 100%;
+}

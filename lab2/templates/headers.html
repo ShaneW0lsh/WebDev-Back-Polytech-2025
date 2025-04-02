@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Заголовки запроса{% endblock %}
+
+{% block content %}
+<h1>Заголовки запроса</h1>
+{% if headers %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Заголовок</th>
+                <th>Значение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for key, value in headers.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Заголовки отсутствуют</p>
+{% endif %}
+{% endblock %} 
