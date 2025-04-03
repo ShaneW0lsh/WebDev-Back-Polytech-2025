@@ -60,27 +60,27 @@ def test_phone_valid_format_dots(client):
 def test_phone_invalid_digits_count(client):
     response = client.post('/phone', data={'phone': '123456789'})
     assert b'is-invalid' in response.data
-    assert 'Недопустимый ввод. Неверное количество цифр.' in response.data.decode('utf-8')
+    assert 'Ошибка: неверное количество цифр.' in response.data.decode('utf-8')
 
 def test_phone_invalid_symbols(client):
     response = client.post('/phone', data={'phone': '123456-7*5-90'})
     assert b'is-invalid' in response.data
-    assert 'Недопустимый ввод. В номере телефона встречаются недопустимые символы.' in response.data.decode('utf-8')
+    assert 'Ошибка: номер телефона содержит недопустимые символы.' in response.data.decode('utf-8')
 
 def test_phone_with_mixed_separators(client):
     response = client.post('/phone', data={'phone': '123-456.75(90)'})
     assert b'8-123-456-75-90' in response.data
-    assert b'is-invalid' not in response.data 
+    assert b'is-invalid' not in response.data
 
 def test_phone_empty_input(client):
     response = client.post('/phone', data={'phone': ''})
     assert b'is-invalid' in response.data
-    assert 'Недопустимый ввод. Неверное количество цифр.' in response.data.decode('utf-8')
+    assert 'Ошибка: неверное количество цифр.' in response.data.decode('utf-8')
 
 def test_phone_invalid_start(client):
     response = client.post('/phone', data={'phone': '99234567890'})
     assert b'is-invalid' in response.data
-    assert 'Недопустимый ввод. Неверное количество цифр.' in response.data.decode('utf-8')
+    assert 'Ошибка: неверное количество цифр.' in response.data.decode('utf-8')
 
 def test_phone_with_spaces(client):
     response = client.post('/phone', data={'phone': '123 456 75 90'})
