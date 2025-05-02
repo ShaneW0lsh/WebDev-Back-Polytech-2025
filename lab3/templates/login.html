@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form method="post">
+    <div class="mb-3">
+        <label for="exampleInputEmail1">Login</label>
+        <input name="username" id="exampleInputEmail1" class="form-control" aria-describedby="emailHelp">
+    </div>
+    <div class="mb3">
+        <label for="exampleInputPassword1">Login</label>
+        <input type="password" name="password" id="exampleInputPassword1" class="form-control" placeholder="Password">
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" name="remember_me" id="exampleCheck1" class="form-check-input">
+        <label class="form-check-label" for="exampleCheck1">Login</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+    {% if error%}
+    <span>{{ error }}</span>
+    {% endif %}
+{% endblock %}
