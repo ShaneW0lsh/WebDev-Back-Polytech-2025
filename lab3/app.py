@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, make_response, session, redir
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
 
 app = Flask(__name__)
-application = app
 
 app.config.from_pyfile('config.py')
 
