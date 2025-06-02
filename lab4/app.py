@@ -3,8 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
 from flask_migrate import Migrate
-from lab4.modelses import db, User, Role
-from lab4.config import Config
+from modelses import db, User, Role
+from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -19,21 +19,18 @@ login_manager.login_view = 'login'
 def init_db():
     with app.app_context():
         db.create_all()
-        # Create default admin role if it doesn't exist
         admin_role = Role.query.filter_by(name='Admin').first()
         if not Role.query.filter_by(name='Admin').first():
             admin_role = Role(name='Admin', description='Administrator')
             db.session.add(admin_role)
             db.session.commit()
 
-        # Create default user role if it doesn't exist
         user_role = Role.query.filter_by(name='User').first()
         if not Role.query.filter_by(name='User').first():
             user_role = Role(name='User', description='Regular User')
             db.session.add(user_role)
             db.session.commit()
 
-        # Create default admin user if it doesn't exist
         if not User.query.filter_by(login='admin').first():
             admin_user = User(
                 login='admin',
@@ -42,11 +39,10 @@ def init_db():
                 middle_name='',
                 role_id=admin_role.id
             )
-            admin_user.set_password('AdminPassword123!')  # Set a secure password
+            admin_user.set_password('AdminPassword123!') 
             db.session.add(admin_user)
             db.session.commit()
 
-        # Create default regular user if it doesn't exist
         if not User.query.filter_by(login='user').first():
             regular_user = User(
                 login='user',
@@ -55,7 +51,7 @@ def init_db():
                 middle_name='',
                 role_id=user_role.id
             )
-            regular_user.set_password('UserPassword123!')  # Set a secure password
+            regular_user.set_password('UserPassword123!') 
             db.session.add(regular_user)
             db.session.commit()
 
