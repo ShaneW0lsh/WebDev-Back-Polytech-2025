@@ -1,0 +1,8 @@
+flask==3.0.3
+flask-sqlalchemy==3.1.1
+flask-login==0.6.3
+flask-migrate==4.0.5
+werkzeug==3.0.6
+pytest==8.3.5
+pytest-mock==3.14.0
+python-dotenv==1.0.1 

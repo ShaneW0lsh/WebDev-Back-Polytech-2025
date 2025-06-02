@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% from "macros.html" import render_pagination %}
+
+{% block content %}
+<h1>Журнал посещений</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Пользователь</th>
+            <th>Страница</th>
+            <th>Дата</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in pagination.items %}
+        <tr>
+            <td>{{ (pagination.page - 1) * pagination.per_page + loop.index }}</td>
+            <td>{{ log.user.full_name if log.user else 'Неаутентифицированный пользователь' }}</td>
+            <td>{{ log.path }}</td>
+            <td>{{ log.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{{ render_pagination(pagination) }}
+
+{% if current_user.role.name == 'Admin' %}
+<div class="mt-3">
+    <a href="{{ url_for('statistics.page_stats') }}" class="btn btn-primary">Статистика по страницам</a>
+    <a href="{{ url_for('statistics.user_stats') }}" class="btn btn-primary">Статистика по пользователям</a>
+</div>
+{% endif %}
+{% endblock %} 

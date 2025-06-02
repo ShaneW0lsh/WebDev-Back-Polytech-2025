@@ -3,8 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash
 from flask_migrate import Migrate
-from lab4.modelses import db, User, Role
-from lab4.config import Config
+from lab5.modelses import db, User, Role
+from lab5.config import Config
+from lab5.statistics import bp as statistics_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -15,6 +16,8 @@ migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+app.register_blueprint(statistics_bp)
 
 def init_db():
     with app.app_context():
@@ -108,13 +111,21 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route('/user/<int:user_id>')
+@login_required
 def view_user(user_id):
     user = User.query.get_or_404(user_id)
+    if current_user.role.name != 'Admin' and current_user.id != user.id:
+        flash('У вас нет прав для просмотра этого профиля')
+        return redirect(url_for('index'))
     return render_template('view_user.html', user=user)
 
 @app.route('/user/create', methods=['GET', 'POST'])
 @login_required
 def create_user():
+    if current_user.role.name != 'Admin':
+        flash('У вас недостаточно прав для создания пользователей')
+        return redirect(url_for('index'))
+    
     if request.method == 'POST':
         login = request.form.get('login')
         password = request.form.get('password')
@@ -160,6 +171,10 @@ def create_user():
 @login_required
 def edit_user(user_id):
     user = User.query.get_or_404(user_id)
+    if current_user.role.name != 'Admin' and current_user.id != user.id:
+        flash('У вас недостаточно прав для редактирования этого пользователя')
+        return redirect(url_for('index'))
+    
     if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -174,7 +189,11 @@ def edit_user(user_id):
             user.first_name = first_name
             user.last_name = last_name
             user.middle_name = middle_name
-            user.role_id = role_id if role_id else None
+            if current_user.role.name == 'Admin':
+                user.role_id = role_id if role_id else None
+            elif role_id and int(role_id) != user.role_id:
+                flash('Вы не можете изменить роль пользователя')
+                return render_template('user_form.html', user=user, roles=Role.query.all())
             db.session.commit()
             flash('User updated successfully')
             return redirect(url_for('index'))
@@ -188,6 +207,10 @@ def edit_user(user_id):
 @app.route('/user/<int:user_id>/delete', methods=['POST'])
 @login_required
 def delete_user(user_id):
+    if current_user.role.name != 'Admin':
+        flash('У вас недостаточно прав для удаления пользователей')
+        return redirect(url_for('index'))
+        
     user = User.query.get_or_404(user_id)
     try:
         db.session.delete(user)

@@ -1,6 +1,8 @@
 blinker==1.8.2
 click==8.1.8
 flask==3.0.3
+flask-sqlalchemy==3.1.1
+flask-login==0.6.3
 gunicorn==23.0.0
 importlib-metadata==8.5.0
 itsdangerous==2.2.0

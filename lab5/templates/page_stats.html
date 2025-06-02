@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Статистика посещений по страницам</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Страница</th>
+            <th>Количество посещений</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for path, count in stats %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ path }}</td>
+            <td>{{ count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="mt-3">
+    <a href="{{ url_for('statistics.export_page_stats') }}" class="btn btn-primary">Экспорт в CSV</a>
+    <a href="{{ url_for('statistics.view_logs') }}" class="btn btn-secondary">Назад к журналу</a>
+</div>
+{% endblock %} 
