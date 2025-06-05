@@ -6,6 +6,8 @@ from flask_migrate import Migrate
 from lab5.modelses import db, User, Role
 from lab5.config import Config
 from lab5.statistics import bp as statistics_bp
+from functools import wraps
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -86,10 +88,25 @@ def validate_login(login):
         return False, "Login must contain only Latin letters and numbers"
     return True, ""
 
+def check_rights(required_role):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                flash('You must be logged in to access this page')
+                return redirect(url_for('login'))
+            if current_user.role.name != required_role:
+                flash('You do not have permission to access this page')
+                return redirect(url_for('index'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
 @app.route('/')
 def index():
     users = User.query.all()
-    return render_template('index.html', users=users)
+    is_admin = current_user.is_authenticated and current_user.role.name == 'Admin'
+    return render_template('index.html', users=users, is_admin=is_admin)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -123,7 +140,7 @@ def view_user(user_id):
 @login_required
 def create_user():
     if current_user.role.name != 'Admin':
-        flash('У вас недостаточно прав для создания пользователей')
+        flash('You don\'t have enough privileges to create users')
         return redirect(url_for('index'))
     
     if request.method == 'POST':
@@ -208,7 +225,7 @@ def edit_user(user_id):
 @login_required
 def delete_user(user_id):
     if current_user.role.name != 'Admin':
-        flash('У вас недостаточно прав для удаления пользователей')
+        flash('You don\'t have enough privileges to delete users')
         return redirect(url_for('index'))
         
     user = User.query.get_or_404(user_id)

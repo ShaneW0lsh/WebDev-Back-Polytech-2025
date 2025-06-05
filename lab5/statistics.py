@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, send_file, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .modelses import db, VisitLog, User
+from lab5.modelses import db, VisitLog, User
 from datetime import datetime
 import csv
 import io
